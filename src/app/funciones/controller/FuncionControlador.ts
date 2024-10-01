@@ -108,6 +108,7 @@ class FuncionControlador extends FuncionDAO {
         FuncionDAO.actualizarFechaFuncion(objCubi, res);
             
     }
+
     
 }
 const funcionControlador = new FuncionControlador();

@@ -17,7 +17,6 @@ class FuncionRuta {
         this.apiRutaFuncion.put("/updateFuncion", funcionControlador.actualizaTuFuncion);
         this.apiRutaFuncion.put("/updateFuncionesPorSala", funcionControlador.actualizaFuncionesPorSala);
         this.apiRutaFuncion.put("/updateFechaFunciones", funcionControlador.actualizaFechasFunciones);
-        
     }
 }
 const peliculaRuta= new FuncionRuta();

@@ -120,86 +120,87 @@ class FuncionDAO {
     }
 
     
-//actualizar el tipo de funcion de las funciones con una sala especifica
-protected static async actualizarFuncionPorSala(datos: Funcion, res: Response): Promise<any> {
-    pool
-    .task(async (consulta) => {
-        let queHacer = 1;
-        let respuBase: any;
-        const existeSal = await consulta.one(SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [datos.idSala]);
-        if(existeSal.existe!=0) {
-            queHacer = 2;
-            respuBase = await consulta.none(SQL_FUNCIONES.UPDATE_TIPO_FUNCION_SALA, [datos.tipoFuncion, datos.idSala]);
-        }
-        return { queHacer, respuBase };
-    })
-    .then(({ queHacer, respuBase }) => {
-        switch (queHacer) {
-            case 1:
-                res.status(200).json({ respuesta: "La sala no existe" });
-                break;
-            case 2:
-                res.status(200).json({ actualizado: "Funciones actualizadas" });
-                break;
-            default:
-                res.status(200).json({ respuesta: "Error al actualizar" });
-                break;
-        }
-    })
-    .catch((miErrorcito) => {
-        console.log(miErrorcito);
-        res.status(400).json({ respuesta: "Pailas, sql totiado" });
-    });
-    
+    //actualizar el tipo de funcion de las funciones con una sala especifica
+    protected static async actualizarFuncionPorSala(datos: Funcion, res: Response): Promise<any> {
+        pool
+        .task(async (consulta) => {
+            let queHacer = 1;
+            let respuBase: any;
+            const existeSal = await consulta.one(SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [datos.idSala]);
+            if(existeSal.existe!=0) {
+                queHacer = 2;
+                respuBase = await consulta.none(SQL_FUNCIONES.UPDATE_TIPO_FUNCION_SALA, [datos.tipoFuncion, datos.idSala]);
+            }
+            return { queHacer, respuBase };
+        })
+        .then(({ queHacer, respuBase }) => {
+            switch (queHacer) {
+                case 1:
+                    res.status(200).json({ respuesta: "La sala no existe" });
+                    break;
+                case 2:
+                    res.status(200).json({ actualizado: "Funciones actualizadas" });
+                    break;
+                default:
+                    res.status(200).json({ respuesta: "Error al actualizar" });
+                    break;
+            }
+        })
+        .catch((miErrorcito) => {
+            console.log(miErrorcito);
+            res.status(400).json({ respuesta: "Pailas, sql totiado" });
+        });
+        
     }
 
-    
-// Actualizar la fecha de la función para todas las funciones de una película en una sala específica:
-protected static async actualizarFechaFuncion(datos: Funcion, res: Response): Promise<any> {
-    pool
-    .task(async (consulta) => {
-        let queHacer = 1;
-        let respuBase: any;
         
-        // Verificar existencia de la película y la sala
-        const existePel = await consulta.one(SQL_FUNCIONES.CHECK_IF_EXISTS_PELICULA, [datos.idPelicula]);
-        const existeSal = await consulta.one(SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [datos.idSala]);
-        
-        if (existePel.existe != 0 && existeSal.existe != 0) {
-            queHacer = 2;
+    // Actualizar la fecha de la función para todas las funciones de una película en una sala específica:
+    protected static async actualizarFechaFuncion(datos: Funcion, res: Response): Promise<any> {
+        pool
+        .task(async (consulta) => {
+            let queHacer = 1;
+            let respuBase: any;
+            
+            // Verificar existencia de la película y la sala
+            const existePel = await consulta.one(SQL_FUNCIONES.CHECK_IF_EXISTS_PELICULA, [datos.idPelicula]);
+            const existeSal = await consulta.one(SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [datos.idSala]);
+            
+            if (existePel.existe != 0 && existeSal.existe != 0) {
+                queHacer = 2;
 
-            // Realizar la actualización y obtener el número de filas afectadas
-            const resultado = await consulta.result(SQL_FUNCIONES.UPDATE_FECHA_FUNCION, [datos.fechaFuncion, datos.idPelicula, datos.idSala]);
+                // Realizar la actualización y obtener el número de filas afectadas
+                const resultado = await consulta.result(SQL_FUNCIONES.UPDATE_FECHA_FUNCION, [datos.fechaFuncion, datos.idPelicula, datos.idSala]);
 
-            // Verificar si alguna fila fue realmente actualizada
-            if (resultado.rowCount == 0) {
-                queHacer = 3; // Si no se actualizó ninguna fila
+                // Verificar si alguna fila fue realmente actualizada
+                if (resultado.rowCount == 0) {
+                    queHacer = 3; // Si no se actualizó ninguna fila
+                }
             }
-        }
 
-        return { queHacer, respuBase };
-    })
-    .then(({ queHacer, respuBase }) => {
-        switch (queHacer) {
-            case 1:
-                res.status(200).json({ respuesta: "La sala y/o película no coinciden con la funcion" });
-                break;
-            case 2:
-                res.status(200).json({ actualizado: "Funciones actualizadas" });
-                break;
-            case 3:
-                res.status(200).json({ respuesta: "No se encontró ninguna función que coincida con los criterios dados" });
-                break;
-            default:
-                res.status(200).json({ respuesta: "Error al actualizar" });
-                break;
-        }
-    })
-    .catch((miErrorcito) => {
-        console.log(miErrorcito);
-        res.status(400).json({ respuesta: "Pailas, sql totiado" });
-    });
-}
+            return { queHacer, respuBase };
+        })
+        .then(({ queHacer, respuBase }) => {
+            switch (queHacer) {
+                case 1:
+                    res.status(200).json({ respuesta: "La sala y/o película no coinciden con la funcion" });
+                    break;
+                case 2:
+                    res.status(200).json({ actualizado: "Funciones actualizadas" });
+                    break;
+                case 3:
+                    res.status(200).json({ respuesta: "No se encontró ninguna función que coincida con los criterios dados" });
+                    break;
+                default:
+                    res.status(200).json({ respuesta: "Error al actualizar" });
+                    break;
+            }
+        })
+        .catch((miErrorcito) => {
+            console.log(miErrorcito);
+            res.status(400).json({ respuesta: "Pailas, sql totiado" });
+        });
+    }
+
 
     
 }    
