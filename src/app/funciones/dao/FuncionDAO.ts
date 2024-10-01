@@ -9,7 +9,6 @@ class FuncionDAO {
         await pool.result(SQL_FUNCIONES.PAGINATE_FUNTIONS, [limite, offset])
             .then((resultado) => {
                 res.status(200).json({
-                    total: resultado.rowCount,
                     funciones: resultado.rows
                 });
             })

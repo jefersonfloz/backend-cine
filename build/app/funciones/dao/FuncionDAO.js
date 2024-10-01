@@ -20,7 +20,6 @@ class FuncionDAO {
             yield dbConnection_1.default.result(sql_funciones_1.SQL_FUNCIONES.PAGINATE_FUNTIONS, [limite, offset])
                 .then((resultado) => {
                 res.status(200).json({
-                    total: resultado.rowCount,
                     funciones: resultado.rows
                 });
             })
