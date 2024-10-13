@@ -28,9 +28,6 @@ class FuncionControlador extends FuncionDAO_1.default {
         }
         FuncionDAO_1.default.paginarFunciones(limiteNum, offsetNum, res);
     }
-    damelasTodas(arg0, damelasTodas) {
-        throw new Error("Method not implemented.");
-    }
     dameFuncion(req, res) {
         FuncionDAO_1.default.obtenerFuncion([], res);
     }
@@ -46,10 +43,10 @@ class FuncionControlador extends FuncionDAO_1.default {
     borraTuFuncion(req, res) {
         FuncionDAO_1.default.borrarFuncionTodo(res);
     }
-    borraTuFuncionporSala(req, res) {
+    borraTuFuncionporId(req, res) {
         const codiguito = Number(req.params.idFuncion);
         const objCubi = new Funcion_1.default(codiguito, 0, "", "", new Date(), 0);
-        FuncionDAO_1.default.borrarFuncionporSala(objCubi, res);
+        FuncionDAO_1.default.borrarFuncion(objCubi, res);
     }
     actualizaTuFuncion(req, res) {
         // Verifica si idFuncion está presente

@@ -112,23 +112,24 @@ class FuncionDAO {
             });
         });
     }
-    static borrarFuncionporSala(datos, res) {
+    static borrarFuncion(datos, res) {
         return __awaiter(this, void 0, void 0, function* () {
             dbConnection_1.default
                 .task((consulta) => __awaiter(this, void 0, void 0, function* () {
                 let queHacer = 1;
                 let respuBase;
-                const existe = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idSala]);
-                if (existe) {
+                const existe = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idFuncion]);
+                const existe_relacion = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION_RELATED, [datos.idFuncion]);
+                if (existe && !existe_relacion) {
                     queHacer = 2;
-                    respuBase = yield consulta.result(sql_funciones_1.SQL_FUNCIONES.DELETE_POR_SALA, [datos.idSala]);
+                    respuBase = yield consulta.result(sql_funciones_1.SQL_FUNCIONES.DELETE, [datos.idFuncion]);
                 }
                 return { queHacer, respuBase };
             }))
                 .then(({ queHacer, respuBase }) => {
                 switch (queHacer) {
                     case 1:
-                        res.status(400).json({ respuesta: "Compita no puedes eliminar una funcion que tenga relacion" });
+                        res.status(400).json({ respuesta: "Compita no puedes eliminar esta funcion, no existe o tiene relacion con alguna tabla" });
                         break;
                     default:
                         res.status(200).json({ respuesta: "Lo borré sin miedo", info: respuBase.rowCount });

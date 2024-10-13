@@ -24,6 +24,14 @@ export const SQL_FUNCIONES = {
 
     `,
 
+    //consultar si la funcion está relacionada con otra tabla
+    CHECK_IF_EXISTS_FUNCION_RELATED: `
+        SELECT 1 AS existe
+        FROM cine.reservaciones
+        WHERE id_funcion = $1
+
+    `,
+
     //consultar si existe una funciones solo por el id de la funcion
     CHECK_IF_EXISTS_FUNCION: `
         SELECT 1 AS existe
@@ -57,9 +65,6 @@ export const SQL_FUNCIONES = {
     DELETE: `
         DELETE FROM cine.funciones WHERE id_funcion = $1;
     `,
-
-    //borrar una funcion
-    DELETE_POR_SALA: "DELETE FROM cine.funciones WHERE id_sala = $1",
 
     DELETE_POR_PELICULA: "DELETE FROM cine.funciones WHERE id_pelicula = $1",
 

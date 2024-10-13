@@ -31,10 +31,6 @@ class FuncionControlador extends FuncionDAO {
         FuncionDAO.paginarFunciones(limiteNum, offsetNum, res)
     }
 
-
-    damelasTodas(arg0: string, damelasTodas: any) {
-        throw new Error("Method not implemented.");
-    }
     public dameFuncion(req:Request, res:Response) {
         FuncionDAO.obtenerFuncion([], res);
     }
@@ -55,10 +51,10 @@ class FuncionControlador extends FuncionDAO {
         
     }
 
-    public borraTuFuncionporSala(req: Request, res: Response): void {
+    public borraTuFuncionporId(req: Request, res: Response): void {
         const codiguito = Number(req.params.idFuncion);
         const objCubi: Funcion = new Funcion(codiguito, 0, "", "", new Date(), 0);
-        FuncionDAO.borrarFuncionporSala(objCubi, res);
+        FuncionDAO.borrarFuncion(objCubi, res);
         
     }
 

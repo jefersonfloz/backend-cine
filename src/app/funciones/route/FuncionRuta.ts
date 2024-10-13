@@ -14,7 +14,7 @@ class FuncionRuta {
         this.apiRutaFuncion.get("/getFuncionesPaginadas", funcionControlador.paginarFunciones);
         this.apiRutaFuncion.post("/addFuncion", funcionControlador.cogeTuFuncion);
         this.apiRutaFuncion.delete("/deleteFuncion", funcionControlador.borraTuFuncion);
-        this.apiRutaFuncion.delete("/deleteFuncionporSala/:idSala", funcionControlador.borraTuFuncionporSala);
+        this.apiRutaFuncion.delete("/deleteFuncionporId/:idFuncion", funcionControlador.borraTuFuncionporId);
         this.apiRutaFuncion.put("/updateFuncion", funcionControlador.actualizaTuFuncion);
         this.apiRutaFuncion.put("/updatetipoFuncionesPorSala", funcionControlador.actualizaFuncionesPorSala);
         this.apiRutaFuncion.put("/updateFechaFunciones", funcionControlador.actualizaFechasFunciones);
