@@ -33,13 +33,26 @@ exports.SQL_FUNCIONES = {
         FROM cine.funciones
         WHERE id_sala = $1;
     `,
+    FUNCIONES_SIN_RESERVACIONES: `
+        SELECT id_funcion
+        FROM cine.Funciones f
+        WHERE f.id_funcion NOT IN (
+            SELECT r.id_funcion
+            FROM cine.Reservaciones r
+        );
+    `,
     CHECK_IF_EXISTS_PELICULA: `
         SELECT count(id_pelicula) AS existe
         FROM cine.funciones
         WHERE id_pelicula = $1;
     `,
     //borrar una funcion
-    DELETE: "DELETE FROM cine.funciones WHERE id_funcion = $1",
+    DELETE: `
+        DELETE FROM cine.funciones WHERE id_funcion = $1;
+    `,
+    //borrar una funcion
+    DELETE_POR_SALA: "DELETE FROM cine.funciones WHERE id_sala = $1",
+    DELETE_POR_PELICULA: "DELETE FROM cine.funciones WHERE id_pelicula = $1",
     // actualizar una función específica
     UPDATE: `
     UPDATE cine.Funciones
@@ -57,5 +70,15 @@ exports.SQL_FUNCIONES = {
     UPDATE cine.Funciones
     SET fecha_funcion = $1
     WHERE id_pelicula = $2 AND id_sala = $3;
+    `,
+    // Actualizar la fecha de la función para todas las funciones de una película en una sala específica
+    UPDATE_FUNCIONES_SALAS: `
+    UPDATE cine.Funciones
+    SET id_sala = $1;
+    `,
+    // Actualizar la fecha de la función para todas las funciones de una película en una sala específica
+    UPDATE_FUNCIONES_PELICULA: `
+    UPDATE cine.Funciones
+    SET id_pelicula = $1;
     `,
 };

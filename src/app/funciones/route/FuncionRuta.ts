@@ -13,10 +13,15 @@ class FuncionRuta {
         this.apiRutaFuncion.get("/getFunciones", funcionControlador.dameFuncion);
         this.apiRutaFuncion.get("/getFuncionesPaginadas", funcionControlador.paginarFunciones);
         this.apiRutaFuncion.post("/addFuncion", funcionControlador.cogeTuFuncion);
-        this.apiRutaFuncion.delete("/deleteFuncion/:idFuncion", funcionControlador.borraTuFuncion);
+        this.apiRutaFuncion.delete("/deleteFuncion", funcionControlador.borraTuFuncion);
+        this.apiRutaFuncion.delete("/deleteFuncionporSala/:idSala", funcionControlador.borraTuFuncionporSala);
         this.apiRutaFuncion.put("/updateFuncion", funcionControlador.actualizaTuFuncion);
-        this.apiRutaFuncion.put("/updateFuncionesPorSala", funcionControlador.actualizaFuncionesPorSala);
+        this.apiRutaFuncion.put("/updatetipoFuncionesPorSala", funcionControlador.actualizaFuncionesPorSala);
         this.apiRutaFuncion.put("/updateFechaFunciones", funcionControlador.actualizaFechasFunciones);
+        //actualizar todas las funciones con una pelicula especifica
+        this.apiRutaFuncion.put("/updateuncionesPeliculas/:idPelicula", funcionControlador.actualizaFuncionesPelicula);
+        //actualizar todas las funciones con una pelicula especifica
+        this.apiRutaFuncion.put("/updateFuncionesSalas/:idSala", funcionControlador.actualizaFuncionesSalas);
     }
 }
 const peliculaRuta= new FuncionRuta();

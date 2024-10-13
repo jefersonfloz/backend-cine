@@ -51,16 +51,17 @@ class FuncionControlador extends FuncionDAO {
     }
 
     public borraTuFuncion(req: Request, res: Response): void {
-        if (isNaN(Number(req.params.idFuncion))) {
-            res.status(400).json({ respuesta: "Y el código mi vale?" });
-        } else {
-            const codiguito = Number(req.params.idFuncion);
-            const objCubi: Funcion = new Funcion(codiguito, 0, "", "", new Date(), 0);
-            FuncionDAO.borrarFuncion(objCubi, res);
-        }
+        FuncionDAO.borrarFuncionTodo(res);
+        
     }
 
-    
+    public borraTuFuncionporSala(req: Request, res: Response): void {
+        const codiguito = Number(req.params.idFuncion);
+        const objCubi: Funcion = new Funcion(codiguito, 0, "", "", new Date(), 0);
+        FuncionDAO.borrarFuncionporSala(objCubi, res);
+        
+    }
+
     public actualizaTuFuncion(req: Request, res: Response): void {
         // Verifica si idFuncion está presente
         if (isNaN(Number(req.body.idFuncion))) {
@@ -93,7 +94,7 @@ class FuncionControlador extends FuncionDAO {
 
     }
 
-
+    
     public actualizaFechasFunciones(req: Request, res: Response): void {
             
         const objCubi: Funcion = new Funcion(
@@ -107,6 +108,18 @@ class FuncionControlador extends FuncionDAO {
             
         FuncionDAO.actualizarFechaFuncion(objCubi, res);
             
+    }
+
+    public actualizaFuncionesSalas(req: Request, res: Response): void {
+        const idSala = parseInt(req.params.idSala);
+        FuncionDAO.actualizarFunciondeSala(idSala,res);
+
+    }
+
+    public actualizaFuncionesPelicula(req: Request, res: Response): void {
+        const idPelicula = parseInt(req.params.idPelicula);
+        FuncionDAO.actualizarFunciondePelicula(idPelicula,res);
+
     }
 
     

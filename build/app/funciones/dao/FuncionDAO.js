@@ -72,23 +72,63 @@ class FuncionDAO {
             });
         });
     }
-    static borrarFuncion(datos, res) {
+    static borrarFuncionTodo(res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            dbConnection_1.default
+                .task((consulta) => __awaiter(this, void 0, void 0, function* () {
+                let queHacer = 1;
+                let funcionesEliminadas = 0;
+                const idDeFunciones = [];
+                // Obtener todas las funciones que no están relacionadas con la tabla Reservaciones
+                const funcionesSinReservaciones = yield consulta.any(sql_funciones_1.SQL_FUNCIONES.FUNCIONES_SIN_RESERVACIONES);
+                // Extraer solo los id_funcion asegurándote de obtener solo el ID
+                const idsFuncionesSinReservaciones = funcionesSinReservaciones.map((funcion) => funcion.idFuncion);
+                // Verificar si hay funciones no relacionadas para eliminar
+                if (idsFuncionesSinReservaciones.length > 0) {
+                    queHacer = 2;
+                    // Iterar sobre los id_funcion sin reservaciones para eliminarlas
+                    for (const id_funcion of idsFuncionesSinReservaciones) {
+                        // Asegúrate de pasar solo el ID como número
+                        const resultado = yield consulta.result(sql_funciones_1.SQL_FUNCIONES.DELETE, [id_funcion]);
+                        idDeFunciones.push(id_funcion);
+                        funcionesEliminadas += resultado.rowCount; // Contar cuántas funciones se eliminaron
+                    }
+                }
+                return { queHacer, funcionesEliminadas, idDeFunciones };
+            }))
+                .then(({ queHacer, funcionesEliminadas, idDeFunciones }) => {
+                switch (queHacer) {
+                    case 1:
+                        res.status(400).json({ respuesta: "No hay funciones disponibles para eliminar, todas están relacionadas con otras tablas." });
+                        break;
+                    default:
+                        res.status(200).json({ respuesta: "Borrado exitosamente", info: `Se eliminaron ${funcionesEliminadas} funciones`, id_funciones_eliminadas: `Se eliminaron las funciones con id: ${idDeFunciones}` });
+                        break;
+                }
+            })
+                .catch((miErrorcito) => {
+                console.log(miErrorcito);
+                res.status(400).json({ respuesta: "Error al ejecutar la consulta SQL" });
+            });
+        });
+    }
+    static borrarFuncionporSala(datos, res) {
         return __awaiter(this, void 0, void 0, function* () {
             dbConnection_1.default
                 .task((consulta) => __awaiter(this, void 0, void 0, function* () {
                 let queHacer = 1;
                 let respuBase;
-                const existe = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idFuncion]);
+                const existe = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idSala]);
                 if (existe) {
                     queHacer = 2;
-                    respuBase = yield consulta.result(sql_funciones_1.SQL_FUNCIONES.DELETE, [datos.idFuncion]);
+                    respuBase = yield consulta.result(sql_funciones_1.SQL_FUNCIONES.DELETE_POR_SALA, [datos.idSala]);
                 }
                 return { queHacer, respuBase };
             }))
                 .then(({ queHacer, respuBase }) => {
                 switch (queHacer) {
                     case 1:
-                        res.status(400).json({ respuesta: "Compita no puedes eliminar una funcion que no existe" });
+                        res.status(400).json({ respuesta: "Compita no puedes eliminar una funcion que tenga relacion" });
                         break;
                     default:
                         res.status(200).json({ respuesta: "Lo borré sin miedo", info: respuBase.rowCount });
@@ -196,6 +236,63 @@ class FuncionDAO {
                         break;
                     case 3:
                         res.status(200).json({ respuesta: "No se encontró ninguna función que coincida con los criterios dados" });
+                        break;
+                    default:
+                        res.status(200).json({ respuesta: "Error al actualizar" });
+                        break;
+                }
+            })
+                .catch((miErrorcito) => {
+                console.log(miErrorcito);
+                res.status(400).json({ respuesta: "Pailas, sql totiado" });
+            });
+        });
+    }
+    static actualizarFunciondeSala(idSala, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            dbConnection_1.default
+                .task((consulta) => __awaiter(this, void 0, void 0, function* () {
+                let queHacer = 1;
+                let respuBase;
+                const existeSal = yield consulta.one(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [idSala]);
+                if (existeSal.existe != 0) {
+                    queHacer = 2;
+                    respuBase = yield consulta.none(sql_funciones_1.SQL_FUNCIONES.UPDATE_FUNCIONES_SALAS, [idSala]);
+                }
+                return { queHacer, respuBase };
+            }))
+                .then(({ queHacer, respuBase }) => {
+                switch (queHacer) {
+                    case 1:
+                        res.status(200).json({ respuesta: "La sala no existe" });
+                        break;
+                    case 2:
+                        res.status(200).json({ actualizado: "Funciones actualizadas" });
+                        break;
+                    default:
+                        res.status(200).json({ respuesta: "Error al actualizar" });
+                        break;
+                }
+            })
+                .catch((miErrorcito) => {
+                console.log(miErrorcito);
+                res.status(400).json({ respuesta: "Pailas, sql totiado" });
+            });
+        });
+    }
+    static actualizarFunciondePelicula(idPelicula, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            dbConnection_1.default
+                .task((consulta) => __awaiter(this, void 0, void 0, function* () {
+                let respuBase;
+                let queHacer = 1;
+                respuBase = yield consulta.none(sql_funciones_1.SQL_FUNCIONES.UPDATE_FUNCIONES_PELICULA, [idPelicula]);
+                return { queHacer, respuBase };
+            }))
+                .then(({ queHacer, respuBase }) => {
+                switch (queHacer) {
+                    case 1:
+                        res.status(200).json({ actualizado: "Funciones actualizadas" });
                         break;
                     default:
                         res.status(200).json({ respuesta: "Error al actualizar" });

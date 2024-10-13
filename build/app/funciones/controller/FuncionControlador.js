@@ -44,14 +44,12 @@ class FuncionControlador extends FuncionDAO_1.default {
         FuncionDAO_1.default.agregarFuncion(objCubi, res);
     }
     borraTuFuncion(req, res) {
-        if (isNaN(Number(req.params.idFuncion))) {
-            res.status(400).json({ respuesta: "Y el código mi vale?" });
-        }
-        else {
-            const codiguito = Number(req.params.idFuncion);
-            const objCubi = new Funcion_1.default(codiguito, 0, "", "", new Date(), 0);
-            FuncionDAO_1.default.borrarFuncion(objCubi, res);
-        }
+        FuncionDAO_1.default.borrarFuncionTodo(res);
+    }
+    borraTuFuncionporSala(req, res) {
+        const codiguito = Number(req.params.idFuncion);
+        const objCubi = new Funcion_1.default(codiguito, 0, "", "", new Date(), 0);
+        FuncionDAO_1.default.borrarFuncionporSala(objCubi, res);
     }
     actualizaTuFuncion(req, res) {
         // Verifica si idFuncion está presente
@@ -70,6 +68,14 @@ class FuncionControlador extends FuncionDAO_1.default {
     actualizaFechasFunciones(req, res) {
         const objCubi = new Funcion_1.default(req.body.idFuncion, req.body.idPelicula, req.body.tipoFuncion, req.body.horaFuncion, new Date(req.body.fechaFuncion), req.body.idSala);
         FuncionDAO_1.default.actualizarFechaFuncion(objCubi, res);
+    }
+    actualizaFuncionesSalas(req, res) {
+        const idSala = parseInt(req.params.idSala);
+        FuncionDAO_1.default.actualizarFunciondeSala(idSala, res);
+    }
+    actualizaFuncionesPelicula(req, res) {
+        const idPelicula = parseInt(req.params.idPelicula);
+        FuncionDAO_1.default.actualizarFunciondePelicula(idPelicula, res);
     }
 }
 const funcionControlador = new FuncionControlador();

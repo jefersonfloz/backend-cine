@@ -466,7 +466,7 @@ BEGIN
     WHILE i <= 100 LOOP
         INSERT INTO cine.funciones (fecha_funcion, hora_funcion,id_pelicula,id_sala,tipo_funcion)
         VALUES
-		( base_date + (i - 1) * interval '1 day', CURRENT_TIME, i,i, concat('Tipo_funcion', i) );
+		( base_date + (i - 1) * interval '1 day', CURRENT_TIME,i,i, concat('Tipo_funcion', i) );
         i := i + 1;
     END LOOP;
 END $$;
