@@ -1,7 +1,7 @@
 export const SQL_FUNCIONES = {
     GET_ALL: "SELECT f.id_funcion, f.id_pelicula, f.tipo_funcion, f.hora_funcion,\
     f.fecha_funcion,f.id_sala \
-    FROM cine.funciones f",
+    FROM cine.funciones f order by f.id_funcion ASC",
 
     ADD: "INSERT INTO cine.funciones (id_pelicula, tipo_funcion, hora_funcion,\
     fecha_funcion,id_sala ) \
@@ -39,7 +39,20 @@ export const SQL_FUNCIONES = {
         WHERE id_funcion = $1;
     `,
 
-    CHECK_IF_EXISTS_SALA:`
+    CHECK_IF_EXISTS_PELICULA: `
+        SELECT 1 AS existe
+        FROM cine.peliculas
+        WHERE id_pelicula = $1;
+    `,
+
+    CHECK_IF_EXISTS_SALA: `
+        SELECT 1 AS existe
+        FROM cine.salas
+        WHERE id_sala = $1;
+    `,
+
+
+    CHECK_IF_RELACION_EXISTS_SALA:`
         SELECT count(id_sala) AS existe
         FROM cine.funciones
         WHERE id_sala = $1;
@@ -55,11 +68,13 @@ export const SQL_FUNCIONES = {
         );
     `,
 
-    CHECK_IF_EXISTS_PELICULA: `
+    CHECK_RELACION_EXISTS_PELICULA: `
         SELECT count(id_pelicula) AS existe
         FROM cine.funciones
         WHERE id_pelicula = $1;
     `,
+
+    
 
     //borrar una funcion
     DELETE: `
@@ -103,8 +118,6 @@ export const SQL_FUNCIONES = {
     UPDATE cine.Funciones
     SET id_pelicula = $1;
     `,
-
-
 
 };
 

@@ -35,19 +35,38 @@ class FuncionDAO {
     protected static async agregarFuncion(datos: Funcion, res: Response): Promise<any> {
         await pool
         .task(async (consulta) => {
-            let queHacer =1;
+            let queHacer = 0;
             let respuBase: any;
-            const existe = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS, [datos.idPelicula, datos.horaFuncion, datos.fechaFuncion,  datos.idSala]);
-            if(!existe) {
+            const existeFuncion = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS, [datos.idPelicula, datos.horaFuncion, datos.fechaFuncion,  datos.idSala]);
+            const existePelicula = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS_PELICULA, [datos.idPelicula]);
+            const existeSala = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [datos.idSala]);
+            if(!existePelicula){
                 queHacer =2;
-                respuBase = await consulta.one(SQL_FUNCIONES.ADD, [datos.idPelicula, datos.tipoFuncion, datos.horaFuncion, datos.fechaFuncion,  datos.idSala]);
+                return { queHacer, respuBase };
             }
+            if(!existeSala){
+                queHacer =3;
+                return { queHacer, respuBase };
+            }
+            if(existeFuncion){
+                queHacer =1;
+                return { queHacer, respuBase };
+            }
+            
+
+            respuBase = await consulta.one(SQL_FUNCIONES.ADD, [datos.idPelicula, datos.tipoFuncion, datos.horaFuncion, datos.fechaFuncion,  datos.idSala]);  
             return { queHacer, respuBase };
         })
         .then(({ queHacer, respuBase }) => {
             switch (queHacer) {
                 case 1:
                     res.status(400).json({ respuesta: "Compita ya existe la funcion" });
+                    break;
+                case 2:
+                    res.status(400).json({ respuesta: "La pelicula no existe" });
+                    break;
+                case 3:
+                    res.status(400).json({ respuesta: "La sala no existe" });
                     break;
                 default:
                     res.status(200).json(respuBase);
@@ -121,13 +140,13 @@ class FuncionDAO {
           .then(({ queHacer, respuBase }) => {
             switch (queHacer) {
                 case 1:
-                    res.status(400).json({ respuesta: "Compita no puedes eliminar esta funcion, no existe o tiene relacion con alguna tabla" });
+                    res.status(400).json({ respuesta: "No puedes eliminar esta funcion, tiene relacion con alguna tabla" });
                     break;
                 default:
                     res.status(200).json({respuesta: "Lo borré sin miedo", info: respuBase.rowCount});
                     break;
             }
-        }).catch((miErrorcito) => {
+        }).catch((miErrorcito) => { 
             console.log(miErrorcito);
             res.status(400).json({ respuesta: "Pailas, sql totiado" });
           });
