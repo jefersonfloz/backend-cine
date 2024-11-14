@@ -72,7 +72,8 @@ exports.SQL_FUNCIONES = {
     UPDATE: `
     UPDATE cine.Funciones
     SET id_pelicula =$2, tipo_funcion = $3, hora_funcion = $4, fecha_funcion = $5, id_sala = $6
-    WHERE id_funcion = $1;
+    WHERE id_funcion = $1
+    RETURNING *;
     `,
     // Actualizar el tipo de función de todas las funciones de una sala específica
     UPDATE_TIPO_FUNCION_SALA: `

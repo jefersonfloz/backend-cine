@@ -15,7 +15,7 @@ class FuncionRuta {
         this.apiRutaFuncion.post("/addFuncion", funcionControlador.cogeTuFuncion);
         this.apiRutaFuncion.delete("/deleteFuncion", funcionControlador.borraTuFuncion);
         this.apiRutaFuncion.delete("/deleteFuncionporId/:idFuncion", funcionControlador.borraTuFuncionporId);
-        this.apiRutaFuncion.put("/updateFuncion", funcionControlador.actualizaTuFuncion);
+        this.apiRutaFuncion.put("/updateFuncion/:idFuncion", funcionControlador.actualizaTuFuncion);
         this.apiRutaFuncion.put("/updatetipoFuncionesPorSala", funcionControlador.actualizaFuncionesPorSala);
         this.apiRutaFuncion.put("/updateFechaFunciones", funcionControlador.actualizaFechasFunciones);
         //actualizar todas las funciones con una pelicula especifica

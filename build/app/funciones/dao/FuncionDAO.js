@@ -70,7 +70,7 @@ class FuncionDAO {
                 .then(({ queHacer, respuBase }) => {
                 switch (queHacer) {
                     case 1:
-                        res.status(400).json({ respuesta: "Compita ya existe la funcion" });
+                        res.status(400).json({ respuesta: "Ya existe la funcion" });
                         break;
                     case 2:
                         res.status(400).json({ respuesta: "La pelicula no existe" });
@@ -160,33 +160,47 @@ class FuncionDAO {
     }
     static actualizarFuncion(datos, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            dbConnection_1.default
+            yield dbConnection_1.default
                 .task((consulta) => __awaiter(this, void 0, void 0, function* () {
-                let queHacer = 1;
+                let queHacer = 0;
                 let respuBase;
-                const existe = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idFuncion]);
-                if (existe) {
+                const existeFuncion = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idFuncion]);
+                const existePelicula = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_PELICULA, [datos.idPelicula]);
+                const existeSala = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_SALA, [datos.idSala]);
+                if (!existePelicula) {
                     queHacer = 2;
-                    respuBase = yield consulta.none(sql_funciones_1.SQL_FUNCIONES.UPDATE, [datos.idFuncion, datos.idPelicula, datos.tipoFuncion, datos.horaFuncion, datos.fechaFuncion, datos.idSala]);
+                    return { queHacer, respuBase };
                 }
+                if (!existeSala) {
+                    queHacer = 3;
+                    return { queHacer, respuBase };
+                }
+                if (!existeFuncion) {
+                    queHacer = 1;
+                    return { queHacer, respuBase };
+                }
+                respuBase = yield consulta.one(sql_funciones_1.SQL_FUNCIONES.UPDATE, [datos.idFuncion, datos.idPelicula, datos.tipoFuncion, datos.horaFuncion, datos.fechaFuncion, datos.idSala]);
                 return { queHacer, respuBase };
             }))
                 .then(({ queHacer, respuBase }) => {
                 switch (queHacer) {
                     case 1:
-                        res.status(400).json({ respuesta: "La funcion no se encuentra en nuestra base de datos" });
+                        res.status(400).json({ respuesta: "No existe la funcion" });
                         break;
                     case 2:
-                        res.status(200).json({ actualizado: "ok" });
+                        res.status(400).json({ respuesta: "La pelicula no existe" });
+                        break;
+                    case 3:
+                        res.status(400).json({ respuesta: "La sala no existe" });
                         break;
                     default:
-                        res.status(200).json({ respuesta: "Error al actualizar" });
+                        res.status(200).json({ respuesta: "Actualizado correctamente" });
                         break;
                 }
             })
-                .catch((miErrorcito) => {
-                console.log(miErrorcito);
-                res.status(400).json({ respuesta: "Pailas, sql totiado" });
+                .catch((miError) => {
+                console.log(miError);
+                res.status(400).json({ respuesta: "Se totió mano" });
             });
         });
     }

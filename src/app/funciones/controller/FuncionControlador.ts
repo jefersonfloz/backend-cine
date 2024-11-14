@@ -60,11 +60,12 @@ class FuncionControlador extends FuncionDAO {
 
     public actualizaTuFuncion(req: Request, res: Response): void {
         // Verifica si idFuncion está presente
-        if (isNaN(Number(req.body.idFuncion))) {
+        const codiguito = Number(req.params.idFuncion);
+        if (isNaN(codiguito)) {
             res.status(400).json({ respuesta: "Y el código mi vale?" });
         } else {
             const objCubi: Funcion = new Funcion(
-                req.body.idFuncion,        
+                codiguito,        
                 req.body.idPelicula,      
                 req.body.tipoFuncion,      
                 req.body.horaFuncion,      

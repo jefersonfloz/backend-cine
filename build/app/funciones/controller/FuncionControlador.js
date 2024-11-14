@@ -50,11 +50,12 @@ class FuncionControlador extends FuncionDAO_1.default {
     }
     actualizaTuFuncion(req, res) {
         // Verifica si idFuncion está presente
-        if (isNaN(Number(req.body.idFuncion))) {
+        const codiguito = Number(req.params.idFuncion);
+        if (isNaN(codiguito)) {
             res.status(400).json({ respuesta: "Y el código mi vale?" });
         }
         else {
-            const objCubi = new Funcion_1.default(req.body.idFuncion, req.body.idPelicula, req.body.tipoFuncion, req.body.horaFuncion, new Date(req.body.fechaFuncion), req.body.idSala);
+            const objCubi = new Funcion_1.default(codiguito, req.body.idPelicula, req.body.tipoFuncion, req.body.horaFuncion, new Date(req.body.fechaFuncion), req.body.idSala);
             FuncionDAO_1.default.actualizarFuncion(objCubi, res);
         }
     }
