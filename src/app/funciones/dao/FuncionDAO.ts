@@ -125,32 +125,41 @@ class FuncionDAO {
     
 
     protected static async borrarFuncion(datos: Funcion, res: Response): Promise<any> {
-        pool
-          .task(async (consulta) => {
-            let queHacer = 1;
-            let respuBase: any;
-            const existe = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idFuncion]);
-            const existe_relacion = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION_RELATED, [datos.idFuncion]);
-            if(existe && !existe_relacion) {
-                queHacer =2;
-                respuBase= await consulta.result(SQL_FUNCIONES.DELETE, [datos.idFuncion]);
-            }
-            return { queHacer, respuBase };
-          })
-          .then(({ queHacer, respuBase }) => {
-            switch (queHacer) {
-                case 1:
-                    res.status(400).json({ respuesta: "No puedes eliminar esta funcion, tiene relacion con alguna tabla" });
-                    break;
-                default:
-                    res.status(200).json({respuesta: "Lo borré sin miedo", info: respuBase.rowCount});
-                    break;
-            }
-        }).catch((miErrorcito) => { 
-            console.log(miErrorcito);
-            res.status(400).json({ respuesta: "Pailas, sql totiado" });
-          });
-    }
+    pool
+      .task(async (consulta) => {
+        let queHacer = 1;
+        let respuBase: any;
+        const existe = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION, [datos.idFuncion]);
+        const existe_relacion = await consulta.oneOrNone(SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION_RELATED, [datos.idFuncion]);
+        if (existe && !existe_relacion) {
+            queHacer = 2;
+            // Primero, obtenemos los detalles de la función antes de borrarla
+            const detallesFuncion = await consulta.oneOrNone(SQL_FUNCIONES.GET_FUNCION_DETAILS, [datos.idFuncion]);
+            // Ahora eliminamos la función
+            respuBase = await consulta.result(SQL_FUNCIONES.DELETE, [datos.idFuncion]);
+            return { queHacer, respuBase, detallesFuncion };
+        }
+        return { queHacer };
+      })
+      .then(({ queHacer, respuBase, detallesFuncion }) => {
+        switch (queHacer) {
+            case 1:
+                res.status(400).json({ respuesta: "No puedes eliminar esta función, tiene relación con alguna tabla" });
+                break;
+            default:
+                // Devolvemos los detalles de la función eliminada, junto con la cantidad de filas afectadas
+                res.status(200).json({
+                    respuesta: "Función eliminada correctamente",
+                    info: respuBase.rowCount,
+                    funcionEliminada: detallesFuncion // Aquí se incluyen los detalles de la función eliminada
+                });
+                break;
+        }
+      }).catch((miErrorcito) => { 
+          console.log(miErrorcito);
+          res.status(400).json({ respuesta: "pailas, sql totiado." });
+      });
+}
 
 
    

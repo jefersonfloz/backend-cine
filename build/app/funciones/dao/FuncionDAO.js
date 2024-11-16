@@ -139,22 +139,31 @@ class FuncionDAO {
                 const existe_relacion = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.CHECK_IF_EXISTS_FUNCION_RELATED, [datos.idFuncion]);
                 if (existe && !existe_relacion) {
                     queHacer = 2;
+                    // Primero, obtenemos los detalles de la función antes de borrarla
+                    const detallesFuncion = yield consulta.oneOrNone(sql_funciones_1.SQL_FUNCIONES.GET_FUNCION_DETAILS, [datos.idFuncion]);
+                    // Ahora eliminamos la función
                     respuBase = yield consulta.result(sql_funciones_1.SQL_FUNCIONES.DELETE, [datos.idFuncion]);
+                    return { queHacer, respuBase, detallesFuncion };
                 }
-                return { queHacer, respuBase };
+                return { queHacer };
             }))
-                .then(({ queHacer, respuBase }) => {
+                .then(({ queHacer, respuBase, detallesFuncion }) => {
                 switch (queHacer) {
                     case 1:
-                        res.status(400).json({ respuesta: "No puedes eliminar esta funcion, tiene relacion con alguna tabla" });
+                        res.status(400).json({ respuesta: "No puedes eliminar esta función, tiene relación con alguna tabla" });
                         break;
                     default:
-                        res.status(200).json({ respuesta: "Lo borré sin miedo", info: respuBase.rowCount });
+                        // Devolvemos los detalles de la función eliminada, junto con la cantidad de filas afectadas
+                        res.status(200).json({
+                            respuesta: "Función eliminada correctamente",
+                            info: respuBase.rowCount,
+                            funcionEliminada: detallesFuncion // Aquí se incluyen los detalles de la función eliminada
+                        });
                         break;
                 }
             }).catch((miErrorcito) => {
                 console.log(miErrorcito);
-                res.status(400).json({ respuesta: "Pailas, sql totiado" });
+                res.status(400).json({ respuesta: "pailas, sql totiado." });
             });
         });
     }

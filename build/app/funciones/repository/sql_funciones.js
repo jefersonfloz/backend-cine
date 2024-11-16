@@ -14,6 +14,12 @@ exports.SQL_FUNCIONES = {
         LIMIT $1 OFFSET $2
 
     `,
+    GET_FUNCION_DETAILS: `
+        SELECT id_funcion,id_pelicula, hora_funcion, fecha_funcion, id_sala
+        FROM cine.funciones
+        WHERE id_funcion = $1;
+
+    `,
     //consultar si existe una funciones por todos sus parametros
     CHECK_IF_EXISTS: `
         SELECT 1 AS existe
