@@ -19,8 +19,8 @@ class FuncionRuta {
         this.apiRutaFuncion.put("/updatetipoFuncionesPorSala", funcionControlador.actualizaFuncionesPorSala);
         this.apiRutaFuncion.put("/updateFechaFunciones", funcionControlador.actualizaFechasFunciones);
         //actualizar todas las funciones con una pelicula especifica
-        this.apiRutaFuncion.put("/updateuncionesPeliculas/:idPelicula", funcionControlador.actualizaFuncionesPelicula);
-        //actualizar todas las funciones con una pelicula especifica
+        this.apiRutaFuncion.put("/updateFuncionesPeliculas/:idPelicula", funcionControlador.actualizaFuncionesPelicula);
+        //actualizar todas las funciones con una sala especifica
         this.apiRutaFuncion.put("/updateFuncionesSalas/:idSala", funcionControlador.actualizaFuncionesSalas);
     }
 }

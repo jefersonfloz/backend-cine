@@ -20,8 +20,8 @@ class FuncionRuta {
         this.apiRutaFuncion.put("/updatetipoFuncionesPorSala", FuncionControlador_1.default.actualizaFuncionesPorSala);
         this.apiRutaFuncion.put("/updateFechaFunciones", FuncionControlador_1.default.actualizaFechasFunciones);
         //actualizar todas las funciones con una pelicula especifica
-        this.apiRutaFuncion.put("/updateuncionesPeliculas/:idPelicula", FuncionControlador_1.default.actualizaFuncionesPelicula);
-        //actualizar todas las funciones con una pelicula especifica
+        this.apiRutaFuncion.put("/updateFuncionesPeliculas/:idPelicula", FuncionControlador_1.default.actualizaFuncionesPelicula);
+        //actualizar todas las funciones con una sala especifica
         this.apiRutaFuncion.put("/updateFuncionesSalas/:idSala", FuncionControlador_1.default.actualizaFuncionesSalas);
     }
 }
